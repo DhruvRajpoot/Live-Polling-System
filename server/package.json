@@ -1,0 +1,21 @@
+{
+  "name": "Live Polling System",
+  "version": "1.0.0",
+  "description": "A live polling system for questions and answers",
+  "author": {
+    "name": "Dhruv Rajpoot",
+    "email": "dhruvrajpootiiitbhopal@gmail.com"
+  },
+  "license": "ISC",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
+  }
+}
