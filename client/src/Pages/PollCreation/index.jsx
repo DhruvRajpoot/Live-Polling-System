@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import downArrow from "../../assets/downarrow.svg";
 import { useSocket } from "../../context/SocketContext";
 import eyeIcon from "../../assets/eye.svg";
+import axiosInstance from "../../config/axiosInstance";
 
 const PollCreation = () => {
   const { createPoll } = useSocket();
@@ -13,6 +14,7 @@ const PollCreation = () => {
   const [options, setOptions] = useState([{ id: 1, text: "", correct: null }]);
   const [timer, setTimer] = useState("60");
   const [isTimerDropdownOpen, setIsTimerDropdownOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
 
   const timerOptions = [
@@ -77,12 +79,27 @@ const PollCreation = () => {
     return true;
   };
 
-  const askQuestion = () => {
+  const askQuestion = async () => {
     if (validateForm()) {
-      let teacherUsername = sessionStorage.getItem("username");
-      let pollData = { question, options, timer, teacherUsername };
-      createPoll(pollData);
-      navigate("/teacher-poll");
+      setIsCreating(true);
+
+      try {
+        let teacherUsername = sessionStorage.getItem("username");
+        let pollData = { question, options, timer, teacherUsername };
+
+        const response = await axiosInstance.post("/polls", pollData);
+
+        if (response.data.status === "success") {
+          createPoll(response.data.data);
+          navigate("/teacher-poll");
+        } else {
+          toast.error("Failed to create poll");
+        }
+      } catch {
+        toast.error("Failed to create poll. Please try again.");
+      } finally {
+        setIsCreating(false);
+      }
     }
   };
 
@@ -281,7 +298,13 @@ const PollCreation = () => {
       <div className="w-full min-h-px bg-[#F2F2F2] mt-2"></div>
 
       <div className="flex justify-end max-w-[calc(100%-200px)] mx-auto my-8">
-        <Button onClick={askQuestion}>Ask Question</Button>
+        <Button
+          onClick={askQuestion}
+          disabled={isCreating}
+          className={isCreating ? "opacity-50 cursor-not-allowed" : ""}
+        >
+          {isCreating ? "Creating Poll..." : "Ask Question"}
+        </Button>
       </div>
     </div>
   );

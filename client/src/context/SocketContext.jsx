@@ -26,7 +26,9 @@ export const SocketProvider = ({ children }) => {
   });
   const [timerExpired, setTimerExpired] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const newSocket = io(API_URL);
     setSocket(newSocket);
@@ -70,6 +72,10 @@ export const SocketProvider = ({ children }) => {
       setParticipants(participantsList);
     });
 
+    newSocket.on("chatMessage", (message) => {
+      setChatMessages((prev) => [...prev, message]);
+    });
+
     newSocket.on("kickedOut", () => {
       sessionStorage.removeItem("username");
       navigate("/kicked-out");
@@ -82,7 +88,7 @@ export const SocketProvider = ({ children }) => {
 
   const createPoll = (pollData) => {
     if (socket) {
-      socket.emit("createPoll", pollData);
+      socket.emit("pollCreated", pollData);
     }
   };
 
@@ -95,6 +101,12 @@ export const SocketProvider = ({ children }) => {
   const kickOutStudent = (socketId) => {
     if (socket) {
       socket.emit("kickOut", socketId);
+    }
+  };
+
+  const sendChatMessage = (message) => {
+    if (socket) {
+      socket.emit("chatMessage", message);
     }
   };
 
@@ -113,9 +125,11 @@ export const SocketProvider = ({ children }) => {
     pollStatus,
     timerExpired,
     participants,
+    chatMessages,
     createPoll,
     submitAnswer,
     kickOutStudent,
+    sendChatMessage,
     calculatePercentage,
   };
 

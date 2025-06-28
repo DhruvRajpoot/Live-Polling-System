@@ -1,5 +1,5 @@
 import { TeacherLogin } from "./controllers/login.js";
-import { getPolls } from "./controllers/poll.js";
+import { getPolls, createPoll } from "./controllers/poll.js";
 
 const setupRoutes = (app) => {
   app.get("/", (req, res) => {
@@ -12,6 +12,10 @@ const setupRoutes = (app) => {
 
   app.get("/polls/:teacherUsername", (req, res) => {
     getPolls(req, res);
+  });
+
+  app.post("/polls", (req, res) => {
+    createPoll(req, res);
   });
 };
 

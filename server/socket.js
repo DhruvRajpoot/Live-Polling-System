@@ -19,12 +19,11 @@ const setupSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    socket.on("createPoll", async (pollData) => {
+    socket.on("pollCreated", (pollData) => {
       votes = {};
       answeredStudents.clear();
-      const poll = await createPoll(pollData);
-      currentPollId = poll._id;
-      io.emit("pollCreated", poll);
+      currentPollId = pollData._id;
+      io.emit("pollCreated", pollData);
 
       if (pollTimer) {
         clearTimeout(pollTimer);
