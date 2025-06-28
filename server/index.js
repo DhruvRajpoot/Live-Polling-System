@@ -3,6 +3,7 @@ import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
 import connectDatabase from "./db.js";
+import setupRoutes from "./routes.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const port = process.env.PORT || 8080;
 connectDatabase();
 
 const server = http.createServer(app);
+setupRoutes(app);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}...`);
