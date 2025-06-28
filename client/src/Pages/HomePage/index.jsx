@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import LogoPill from "../../components/common/LogoPill";
 import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../config/axiosInstance";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -10,10 +11,12 @@ const HomePage = () => {
     setSelectedRole(role);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (selectedRole === "student") {
       navigate("/student-registration");
     } else {
+      const teacherlogin = await axiosInstance.post(`/teacher-login`);
+      sessionStorage.setItem("username", teacherlogin.data.username);
       navigate("/poll-creation");
     }
   };
