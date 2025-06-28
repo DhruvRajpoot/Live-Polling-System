@@ -6,7 +6,7 @@ import axiosInstance from "../../config/axiosInstance";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState("student");
+  const [selectedRole, setSelectedRole] = useState(null);
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
@@ -22,14 +22,14 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center px-4">
+    <div className="min-h-screen  flex items-center justify-center px-4">
       <div className="w-full max-w-4xl">
         <div className="flex justify-center mb-10">
           <LogoPill />
         </div>
 
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-normal leading-[51px] text-primary mb-4 font-sora">
+          <h1 className="text-4xl font-normal leading-[51px]  mb-4 font-sora">
             <span className="font-normal">Welcome to the </span>
             <span className="font-semibold">Live Polling System</span>
           </h1>
@@ -49,7 +49,7 @@ const HomePage = () => {
             } hover:shadow-lg`}
             onClick={() => handleRoleSelect("student")}
           >
-            <h3 className="text-xl font-semibold leading-7 text-primary mb-3 font-sora">
+            <h3 className="text-xl font-semibold leading-7  mb-3 font-sora">
               I'm a Student
             </h3>
             <p className="text-base leading-5 text-tertiary font-sora">
@@ -66,7 +66,7 @@ const HomePage = () => {
             } hover:shadow-lg`}
             onClick={() => handleRoleSelect("teacher")}
           >
-            <h3 className="text-xl font-semibold leading-7 text-primary mb-3 font-sora">
+            <h3 className="text-xl font-semibold leading-7  mb-3 font-sora">
               I'm a Teacher
             </h3>
             <p className="text-base leading-5 text-tertiary font-sora">

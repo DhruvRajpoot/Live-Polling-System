@@ -5,7 +5,7 @@ dotenv.config();
 const DB_URL =
   process.env.NODE_ENV === "production"
     ? process.env.MONGODB_URL
-    : "mongodb://localhost:27017/intevuePoll";
+    : "mongodb://localhost:27017/intervuePoll";
 
 const connectdatabase = async () => {
   try {

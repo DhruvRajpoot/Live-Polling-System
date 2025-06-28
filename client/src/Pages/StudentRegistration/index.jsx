@@ -13,20 +13,20 @@ const StudentRegistration = () => {
 
   const handleContinue = () => {
     if (name.trim()) {
-      localStorage.setItem("studentName", name.trim());
+      sessionStorage.setItem("username", name.trim());
       navigate("/student-poll");
     }
   };
 
   return (
-    <div className="min-h-screen bg-primary flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen  flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-3xl mx-auto">
         <div className="flex justify-center mb-8">
           <LogoPill />
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="font-sora text-4xl leading-[51px] text-center text-primary mb-6">
+          <h1 className="font-sora text-4xl leading-[51px] text-center  mb-6">
             <span className="font-normal">Let's </span>
             <span className="font-semibold">Get Started</span>
           </h1>
@@ -38,9 +38,7 @@ const StudentRegistration = () => {
               {" "}
               If you are a student, you will be able to{" "}
             </span>
-            <span className="font-semibold text-primary">
-              submit your answers
-            </span>
+            <span className="font-semibold ">submit your answers</span>
             <span className="font-normal">
               , participate in live polls, and see how your responses compare
               with your classmates
@@ -49,7 +47,7 @@ const StudentRegistration = () => {
         </div>
 
         <div className="mb-8 max-w-lg mx-auto">
-          <label className="block font-sora text-lg font-normal text-primary mb-3">
+          <label className="block font-sora text-lg font-normal  mb-3">
             Enter your Name
           </label>
           <input
@@ -57,7 +55,7 @@ const StudentRegistration = () => {
             value={name}
             onChange={handleNameChange}
             placeholder="Rahul Bajaj"
-            className="w-full h-15 px-4 py-4 bg-gray-lightest rounded-sm font-sora text-lg text-primary focus:outline-none focus:ring-1 focus:ring-purple focus:border-transparent"
+            className="w-full h-15 px-4 py-4 bg-gray-lightest rounded-sm font-sora text-lg  focus:outline-none focus:ring-1 focus:ring-purple focus:border-transparent"
             style={{ backgroundColor: "#f2f2f2" }}
           />
         </div>
