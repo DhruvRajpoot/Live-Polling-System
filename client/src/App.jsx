@@ -8,23 +8,26 @@ import StudentPollPage from "./Pages/StudentPollPage";
 import TeacherPollPage from "./Pages/TeacherPollPage";
 import ToastProvider from "./components/common/ToastProvide";
 import KickedOut from "./Pages/KickedOut";
+import { SocketProvider } from "./context/SocketContext";
 
 const App = () => {
   return (
-    <Router>
-      <ToastProvider />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/student-registration"
-          element={<StudentRegistrationPage />}
-        />
-        <Route path="/poll-creation" element={<PollCreationPage />} />
-        <Route path="/student-poll" element={<StudentPollPage />} />
-        <Route path="/teacher-poll" element={<TeacherPollPage />} />
-        <Route path="/kicked-out" element={<KickedOut />} />
-      </Routes>
-    </Router>
+    <SocketProvider>
+      <Router>
+        <ToastProvider />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/student-registration"
+            element={<StudentRegistrationPage />}
+          />
+          <Route path="/poll-creation" element={<PollCreationPage />} />
+          <Route path="/student-poll" element={<StudentPollPage />} />
+          <Route path="/teacher-poll" element={<TeacherPollPage />} />
+          <Route path="/kicked-out" element={<KickedOut />} />
+        </Routes>
+      </Router>
+    </SocketProvider>
   );
 };
 

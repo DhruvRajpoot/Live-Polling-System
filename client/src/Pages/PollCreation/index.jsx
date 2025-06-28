@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../../components/ui/Button";
-import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../config/axiosInstance";
 import LogoPill from "../../components/common/LogoPill";
 import { toast } from "react-hot-toast";
 import downArrow from "../../assets/downarrow.svg";
+import { useSocket } from "../../context/SocketContext";
 
 const PollCreation = () => {
-  const [socket, setSocket] = useState(null);
+  const { createPoll } = useSocket();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([{ id: 1, text: "", correct: null }]);
   const [timer, setTimer] = useState("60");
@@ -20,15 +19,6 @@ const PollCreation = () => {
     { value: "60", label: "60 seconds" },
     { value: "90", label: "90 seconds" },
   ];
-
-  useEffect(() => {
-    const newSocket = io(API_URL);
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
 
   const handleQuestionChange = (e) => {
     setQuestion(e.target.value);
@@ -90,10 +80,8 @@ const PollCreation = () => {
     if (validateForm()) {
       let teacherUsername = sessionStorage.getItem("username");
       let pollData = { question, options, timer, teacherUsername };
-      if (socket) {
-        socket.emit("createPoll", pollData);
-        navigate("/teacher-poll");
-      }
+      createPoll(pollData);
+      navigate("/teacher-poll");
     }
   };
 
@@ -106,7 +94,7 @@ const PollCreation = () => {
           </div>
 
           <div className="mb-6">
-            <h1 className="text-4xl font-sora leading-tight text-primary mb-4">
+            <h1 className="text-4xl font-sora leading-tight  mb-4">
               <span className="font-normal">Let's </span>
               <span className="font-semibold">Get Started</span>
             </h1>
@@ -118,7 +106,7 @@ const PollCreation = () => {
 
           <div>
             <div className="flex justify-between items-start mb-4">
-              <h2 className="text-xl font-sora font-semibold text-primary">
+              <h2 className="text-xl font-sora font-semibold ">
                 Enter your question
               </h2>
               <div className="relative w-44 bg-[#F2F2F2]">
@@ -127,7 +115,7 @@ const PollCreation = () => {
                   onClick={() => setIsTimerDropdownOpen(!isTimerDropdownOpen)}
                   className={`flex items-center justify-between
                     w-full bg-[#F2F2F2] px-6 py-2 text-left border rounded-lg focus:outline-none focus:ring-1 focus:border-transparent
-                    border-gray-300 font-sora text-primary
+                    border-gray-300 font-sora 
                   `}
                 >
                   <span>
@@ -150,7 +138,7 @@ const PollCreation = () => {
                         key={index}
                         type="button"
                         onClick={() => handleTimerChange(option)}
-                        className="w-full px-3 py-2 text-left hover:bg-white focus:outline-none focus:bg-white first:rounded-t-lg last:rounded-b-lg font-sora text-primary"
+                        className="w-full px-3 py-2 text-left hover:bg-white focus:outline-none focus:bg-white first:rounded-t-lg last:rounded-b-lg font-sora "
                       >
                         {option.label}
                       </button>
@@ -165,11 +153,11 @@ const PollCreation = () => {
                 <textarea
                   value={question}
                   onChange={handleQuestionChange}
-                  className="w-full min-h-44 p-4 text-lg font-sora text-primary resize-none border-none outline-none bg-[#F2F2F2]"
+                  className="w-full min-h-44 p-4 text-lg font-sora  resize-none border-none outline-none bg-[#F2F2F2]"
                   placeholder="Enter your question here..."
                   maxLength={100}
                 />
-                <div className="absolute bottom-4 right-4 text-sm font-sora text-primary">
+                <div className="absolute bottom-4 right-4 text-sm font-sora ">
                   {question.length}/100
                 </div>
               </div>
@@ -177,10 +165,10 @@ const PollCreation = () => {
 
             <div className="flex flex-col gap-6 max-w-4xl">
               <div className="flex justify-between">
-                <h3 className="text-lg font-sora font-semibold text-primary">
+                <h3 className="text-lg font-sora font-semibold ">
                   Edit Options
                 </h3>
-                <h3 className="text-lg font-sora font-semibold text-primary">
+                <h3 className="text-lg font-sora font-semibold ">
                   Is It Correct?
                 </h3>
               </div>
@@ -197,7 +185,7 @@ const PollCreation = () => {
                   </div>
                   <input
                     type="text"
-                    className="flex-1 p-2 border border-gray-300 rounded-sm font-sora text-primary"
+                    className="flex-1 p-2 border border-gray-300 rounded-sm font-sora  outline outline-[#8F64E1]"
                     placeholder={`Enter option ${index + 1}`}
                     value={option.text}
                     onChange={(e) => handleOptionChange(index, e.target.value)}

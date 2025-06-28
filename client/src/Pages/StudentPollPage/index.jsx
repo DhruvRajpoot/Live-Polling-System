@@ -1,45 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 import stopwatch from "../../assets/stopwatch.svg";
-import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../config/axiosInstance";
-import io from "socket.io-client";
 import LogoPill from "../../components/common/LogoPill";
+import { useSocket } from "../../context/SocketContext";
+import Button from "../../components/ui/Button";
 
 const StudentPollPage = () => {
-  const [socket, setSocket] = useState(null);
-  const [votes, setVotes] = useState({});
+  const { currentPoll, votes, submitAnswer, calculatePercentage } = useSocket();
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [pollQuestion, setPollQuestion] = useState("");
-  const [pollOptions, setPollOptions] = useState([]);
-  const [pollId, setPollId] = useState("");
+  const [questionCount, setQuestionCount] = useState(0);
   const timerRef = useRef(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const newSocket = io(API_URL);
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
-
-  const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
   };
 
   const handleSubmit = () => {
-    if (selectedOption) {
+    if (selectedOption && currentPoll) {
       const username = sessionStorage.getItem("username");
       if (username) {
-        socket.emit("submitAnswer", {
+        submitAnswer({
           username: username,
-          option: selectedOption,
-          pollId: pollId,
+          option: selectedOption.text,
+          pollId: currentPoll._id,
         });
         setSubmitted(true);
       } else {
@@ -49,46 +33,13 @@ const StudentPollPage = () => {
   };
 
   useEffect(() => {
-    const handleKickedOut = () => {
-      sessionStorage.removeItem("username");
-      navigate("/kicked-out");
-    };
-
-    if (socket) {
-      socket.on("kickedOut", handleKickedOut);
-
-      return () => {
-        socket.off("kickedOut", handleKickedOut);
-      };
+    if (currentPoll && currentPoll.question !== "") {
+      setTimeLeft(parseInt(currentPoll.timer));
+      setSubmitted(false);
+      setSelectedOption(null);
+      setQuestionCount((prev) => prev + 1);
     }
-  }, [socket, navigate]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("pollCreated", (pollData) => {
-        setPollQuestion(pollData.question);
-        setPollOptions(pollData.options);
-        setVotes({});
-        setSubmitted(false);
-        setSelectedOption(null);
-        setTimeLeft(pollData.timer);
-        setPollId(pollData._id);
-      });
-
-      socket.on("pollResults", (updatedVotes) => {
-        setVotes(updatedVotes);
-      });
-    }
-    return () => {
-      if (socket) {
-        socket.off("pollCreated");
-        socket.off("pollResults");
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
+  }, [currentPoll]);
 
   useEffect(() => {
     if (timeLeft > 0 && !submitted) {
@@ -115,13 +66,19 @@ const StudentPollPage = () => {
     };
   }, [timeLeft, submitted]);
 
-  const calculatePercentage = (count) => {
-    if (totalVotes === 0) return 0;
-    return (count / totalVotes) * 100;
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
+  const pollQuestion = currentPoll?.question || "";
+  const pollOptions = currentPoll?.options || [];
+
   return (
-    <div className="min-h-screen bg-primary-4 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen -4 flex flex-col items-center justify-center p-4">
       {pollQuestion === "" && timeLeft === 0 && (
         <div className="flex justify-center items-center mx-auto">
           <div className="flex flex-col items-center justify-center text-center">
@@ -147,81 +104,146 @@ const StudentPollPage = () => {
               <span className="sr-only">Loading...</span>
             </div>
 
-            <h3 className="text-2xl font-medium font-sora">
-              <b>Wait for the teacher to ask questions..</b>
+            <h3 className="text-2xl font-medium font-sora ">
+              <span className="font-semibold">
+                Wait for the teacher to ask questions..
+              </span>
             </h3>
           </div>
         </div>
       )}
+
       {pollQuestion !== "" && (
-        <div className="w-full max-w-2xl bg-white rounded-lg border border-purple-200 overflow-hidden mb-8">
-          <div className="flex max-w-2xl w-full gap-8 mb-6">
-            <h1 className="text-2xl font-semibold font-sora text-left">
-              {pollQuestion}
+        <div className="max-w-2xl w-full">
+          <div className="flex items-center gap-4 mb-8 w-full text-left">
+            <h1 className="text-2xl font-semibold  font-sora">
+              Question {questionCount}
             </h1>
             <div className="flex items-center gap-2">
               <img src={stopwatch} alt="Timer" className="w-6 h-6" />
               <span className="text-lg font-semibold text-red-500 font-sora">
-                {timeLeft}
+                {formatTime(timeLeft)}
               </span>
             </div>
           </div>
 
-          <div className="p-4 space-y-3">
-            {pollOptions.map((option) => (
-              <div
-                key={option.id}
-                className={`flex items-center justify-between p-3 bg-primary-2 rounded-md border border-purple-300 ${
-                  selectedOption === option.text ? "border option-border" : ""
-                }`}
-                style={{
-                  cursor:
-                    submitted || timeLeft === 0 ? "not-allowed" : "pointer",
-                }}
-                onClick={() => {
-                  if (!submitted && timeLeft > 0) {
-                    handleOptionSelect(option.text);
-                  }
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-xs font-semibold text-accent font-sora">
-                      {option.id}
+          <div className="w-full bg-white rounded-lg border border-purple-200 overflow-hidden mb-8">
+            <div className="bg-gradient-to-r from-gray-800 to-gray-600 px-4 py-3 rounded-t-lg">
+              <h2 className="text-white font-semibold font-sora">
+                {pollQuestion}
+              </h2>
+            </div>
+
+            <div className="p-4 space-y-3">
+              {pollOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className={`flex items-center justify-between p-3 rounded-md border relative overflow-hidden ${
+                    selectedOption === option
+                      ? "bg-white border-[#8F64E1]"
+                      : "bg-[#F6F6F6] border-[#8d8d8d23]"
+                  }`}
+                  style={{
+                    cursor:
+                      submitted || timeLeft === 0 ? "not-allowed" : "pointer",
+                  }}
+                  onClick={() => {
+                    if (!submitted && timeLeft > 0) {
+                      handleOptionSelect(option);
+                    }
+                  }}
+                >
+                  {submitted && (
+                    <div
+                      className="absolute left-0 top-0 h-full bg-[#6766D5] transition-all duration-500 ease-out"
+                      style={{
+                        width: `${Math.round(
+                          calculatePercentage(votes[option.text] || 0)
+                        )}%`,
+                        zIndex: 1,
+                      }}
+                    />
+                  )}
+
+                  <div className="flex items-center gap-3 relative w-full z-10">
+                    <div
+                      className={`w-6 h-6 text-white rounded-full flex items-center justify-center ${
+                        submitted
+                          ? Math.round(
+                              calculatePercentage(votes[option.text] || 0)
+                            ) < 10
+                            ? "bg-[#8D8D8D]"
+                            : "bg-white"
+                          : selectedOption === option
+                          ? "bg-[#8F64E1]"
+                          : "bg-[#8D8D8D]"
+                      }`}
+                    >
+                      <span
+                        className={`text-xs font-semibold font-sora ${
+                          submitted
+                            ? Math.round(
+                                calculatePercentage(votes[option.text] || 0)
+                              ) < 10
+                              ? "text-white"
+                              : "text-[#8F64E1]"
+                            : "text-white"
+                        }`}
+                      >
+                        {option.id}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`font-sora ${
+                        submitted
+                          ? Math.round(
+                              calculatePercentage(votes[option.text] || 0)
+                            ) > 30
+                            ? "text-white"
+                            : "text-black"
+                          : "text-black"
+                      }`}
+                    >
+                      {option.text}
                     </span>
                   </div>
-                  <span className="text-white font-semibold font-sora">
-                    {option.text}
-                  </span>
+
+                  {submitted && (
+                    <span
+                      className={`font-semibold font-sora z-10 relative ${
+                        Math.round(
+                          calculatePercentage(votes[option.text] || 0)
+                        ) > 90
+                          ? "text-white"
+                          : "text-black"
+                      }`}
+                    >
+                      {Math.round(calculatePercentage(votes[option.text] || 0))}
+                      %
+                    </span>
+                  )}
                 </div>
-                {submitted && (
-                  <span className="text-primary font-semibold font-sora">
-                    {Math.round(calculatePercentage(votes[option.text] || 0))}%
-                  </span>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end mb-8">
+            <Button
+              onClick={handleSubmit}
+              disabled={!selectedOption || submitted || timeLeft === 0}
+            >
+              Submit Answer
+            </Button>
           </div>
         </div>
       )}
 
-      {!submitted && selectedOption && timeLeft > 0 && (
-        <div className="d-flex justify-content-end align-items-center">
-          <button
-            type="submit"
-            className="btn continue-btn my-3 w-25"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
-        </div>
-      )}
-
       {submitted && (
-        <div className="mt-5">
-          <h6 className="text-center">
-            Wait for the teacher to ask a new question...
-          </h6>
+        <div className="text-center mb-8">
+          <p className="text-2xl font-semibold  font-sora">
+            Wait for the teacher to ask a new question..
+          </p>
         </div>
       )}
     </div>
