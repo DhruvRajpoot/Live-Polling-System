@@ -6,12 +6,26 @@ import Button from "../../components/ui/Button";
 import PollOptions from "../../components/PollOptions";
 
 const StudentPollPage = () => {
-  const { currentPoll, votes, submitAnswer, calculatePercentage } = useSocket();
+  const {
+    socket,
+    currentPoll,
+    votes,
+    submitAnswer,
+    calculatePercentage,
+    timerExpired,
+  } = useSocket();
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
   const timerRef = useRef(null);
+
+  useEffect(() => {
+    const username = sessionStorage.getItem("username");
+    if (socket && username) {
+      socket.emit("joinChat", { username });
+    }
+  }, [socket]);
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
@@ -66,6 +80,16 @@ const StudentPollPage = () => {
       }
     };
   }, [timeLeft, submitted]);
+
+  useEffect(() => {
+    if (timerExpired && !submitted) {
+      setSubmitted(true);
+      setTimeLeft(0);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+  }, [timerExpired, submitted]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);

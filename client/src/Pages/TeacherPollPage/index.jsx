@@ -7,7 +7,8 @@ import { useSocket } from "../../context/SocketContext";
 import PollOptions from "../../components/PollOptions";
 
 const TeacherPollPage = () => {
-  const { currentPoll, votes, calculatePercentage } = useSocket();
+  const { currentPoll, votes, calculatePercentage, pollStatus, timerExpired } =
+    useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,8 @@ const TeacherPollPage = () => {
   const pollQuestion = currentPoll?.question || "";
   const pollOptions = currentPoll?.options || [];
 
+  const canAskNewQuestion = !pollQuestion || pollStatus.allAnswered;
+
   return (
     <div className="min-h-screen -4 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl">
@@ -44,7 +47,48 @@ const TeacherPollPage = () => {
         {pollQuestion && (
           <div className="max-w-2xl w-full">
             <div className="flex items-center gap-4 mb-6 max-w-2xl w-full text-left">
-              <h1 className="text-2xl font-semibold  font-sora">Question</h1>
+              <h1 className="text-2xl font-semibold font-sora">Question</h1>
+            </div>
+
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-gray-600 font-sora">
+                  <span className="font-semibold">Students Progress:</span>
+                </div>
+                <div className="text-sm font-sora">
+                  <span className="font-semibold text-[#6766D5]">
+                    {pollStatus.answeredStudents}
+                  </span>
+                  <span className="text-gray-600"> / </span>
+                  <span className="font-semibold text-gray-800">
+                    {pollStatus.totalStudents}
+                  </span>
+                  <span className="text-gray-600"> answered</span>
+                </div>
+              </div>
+
+              <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-[#6766D5] h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${
+                      pollStatus.totalStudents > 0
+                        ? (pollStatus.answeredStudents /
+                            pollStatus.totalStudents) *
+                          100
+                        : 0
+                    }%`,
+                  }}
+                ></div>
+              </div>
+
+              {pollStatus.allAnswered && (
+                <div className="mt-2 text-sm text-green-600 font-semibold font-sora">
+                  {timerExpired
+                    ? "⏰ Time's up! All students marked as answered."
+                    : "✓ All students have answered!"}
+                </div>
+              )}
             </div>
 
             <PollOptions
@@ -56,8 +100,24 @@ const TeacherPollPage = () => {
             />
 
             <div className="flex justify-end mb-8">
-              <Button onClick={askNewQuestion}>+ Ask a New Question</Button>
+              <Button
+                onClick={askNewQuestion}
+                disabled={!canAskNewQuestion}
+                className={
+                  !canAskNewQuestion ? "opacity-50 cursor-not-allowed" : ""
+                }
+              >
+                + Ask a New Question
+              </Button>
             </div>
+
+            {!canAskNewQuestion && (
+              <div className="text-center text-sm text-gray-500 font-sora mb-4">
+                {timerExpired
+                  ? "Timer has expired. You can now ask a new question."
+                  : "Wait for all students to answer before asking a new question"}
+              </div>
+            )}
           </div>
         )}
 

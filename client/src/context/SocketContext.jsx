@@ -18,6 +18,12 @@ export const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [currentPoll, setCurrentPoll] = useState(null);
   const [votes, setVotes] = useState({});
+  const [pollStatus, setPollStatus] = useState({
+    totalStudents: 0,
+    answeredStudents: 0,
+    allAnswered: false
+  });
+  const [timerExpired, setTimerExpired] = useState(false);
 
   useEffect(() => {
     const newSocket = io(API_URL);
@@ -38,10 +44,24 @@ export const SocketProvider = ({ children }) => {
     newSocket.on("pollCreated", (pollData) => {
       setCurrentPoll(pollData);
       setVotes({});
+      setPollStatus({
+        totalStudents: 0,
+        answeredStudents: 0,
+        allAnswered: false
+      });
+      setTimerExpired(false);
     });
 
     newSocket.on("pollResults", (updatedVotes) => {
       setVotes(updatedVotes);
+    });
+
+    newSocket.on("pollStatusUpdate", (status) => {
+      setPollStatus(status);
+    });
+
+    newSocket.on("timerExpired", () => {
+      setTimerExpired(true);
     });
 
     newSocket.on("kickedOut", () => {
@@ -78,6 +98,8 @@ export const SocketProvider = ({ children }) => {
     isConnected,
     currentPoll,
     votes,
+    pollStatus,
+    timerExpired,
     createPoll,
     submitAnswer,
     calculatePercentage,
