@@ -17,7 +17,7 @@ const Button = ({
   };
 
   const baseClasses =
-    "w-80 h-15 rounded-full text-white text-lg font-semibold leading-6 font-sora transition-all duration-200 hover:opacity-90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    "flex justify-center items-center gap-2 w-80 h-15 rounded-full text-white text-lg font-semibold leading-6 font-sora transition-all duration-200 hover:opacity-90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
   const buttonClasses = `${baseClasses} ${variants[variant]} ${className}`;
 

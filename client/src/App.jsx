@@ -4,11 +4,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
 import StudentRegistrationPage from "./Pages/StudentRegistration";
 import PollCreationPage from "./Pages/PollCreation";
-import StudentPollPage from "./pages/StudentPollPage";
+import StudentPollPage from "./Pages/StudentPollPage";
+import TeacherPollPage from "./Pages/TeacherPollPage";
+import ToastProvider from "./components/common/ToastProvide";
+import KickedOut from "./Pages/KickedOut";
 
 const App = () => {
   return (
     <Router>
+      <ToastProvider />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route
@@ -17,6 +21,8 @@ const App = () => {
         />
         <Route path="/poll-creation" element={<PollCreationPage />} />
         <Route path="/student-poll" element={<StudentPollPage />} />
+        <Route path="/teacher-poll" element={<TeacherPollPage />} />
+        <Route path="/kicked-out" element={<KickedOut />} />
       </Routes>
     </Router>
   );
