@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import stopwatch from "../../assets/stopwatch.svg";
-import chat from "../../assets/chat.svg";
+import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config/axiosInstance";
 import io from "socket.io-client";
 import LogoPill from "../../components/common/LogoPill";
-import { API_URL } from "../../config/axiosInstance";
-
-const socket = io(API_URL);
 
 const StudentPollPage = () => {
+  const [socket, setSocket] = useState(null);
   const [votes, setVotes] = useState({});
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -16,6 +15,16 @@ const StudentPollPage = () => {
   const [pollOptions, setPollOptions] = useState([]);
   const [pollId, setPollId] = useState("");
   const timerRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const newSocket = io(API_URL);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
 
   const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
 
@@ -40,21 +49,41 @@ const StudentPollPage = () => {
   };
 
   useEffect(() => {
-    socket.on("pollCreated", (pollData) => {
-      setPollQuestion(pollData.question);
-      setPollOptions(pollData.options);
-      setVotes({});
-      setSubmitted(false);
-      setSelectedOption(null);
-      setTimeLeft(pollData.timer);
-      setPollId(pollData._id);
-    });
+    const handleKickedOut = () => {
+      sessionStorage.removeItem("username");
+      navigate("/kicked-out");
+    };
 
-    socket.on("pollResults", (updatedVotes) => {
-      setVotes(updatedVotes);
-    });
+    if (socket) {
+      socket.on("kickedOut", handleKickedOut);
 
+      return () => {
+        socket.off("kickedOut", handleKickedOut);
+      };
+    }
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("pollCreated", (pollData) => {
+        setPollQuestion(pollData.question);
+        setPollOptions(pollData.options);
+        setVotes({});
+        setSubmitted(false);
+        setSelectedOption(null);
+        setTimeLeft(pollData.timer);
+        setPollId(pollData._id);
+      });
+
+      socket.on("pollResults", (updatedVotes) => {
+        setVotes(updatedVotes);
+      });
+    }
     return () => {
+      if (socket) {
+        socket.off("pollCreated");
+        socket.off("pollResults");
+      }
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
@@ -101,7 +130,7 @@ const StudentPollPage = () => {
             <div role="status" className="my-8">
               <svg
                 aria-hidden="true"
-                class="w-12 h-12 text-[#500ECE] animate-spin dark:text-[#500ECE] fill-white"
+                className="w-12 h-12 text-[#500ECE] animate-spin dark:text-[#500ECE] fill-white"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +144,7 @@ const StudentPollPage = () => {
                   fill="currentFill"
                 />
               </svg>
-              <span class="sr-only">Loading...</span>
+              <span className="sr-only">Loading...</span>
             </div>
 
             <h3 className="text-2xl font-medium font-sora">
@@ -124,7 +153,6 @@ const StudentPollPage = () => {
           </div>
         </div>
       )}
-
       {pollQuestion !== "" && (
         <div className="w-full max-w-2xl bg-white rounded-lg border border-purple-200 overflow-hidden mb-8">
           <div className="flex max-w-2xl w-full gap-8 mb-6">
@@ -196,12 +224,6 @@ const StudentPollPage = () => {
           </h6>
         </div>
       )}
-
-      <div className="fixed bottom-8 right-8">
-        <button className="w-18 h-18 bg-[#5A66D1] rounded-full flex items-center justify-center shadow-lg hover:bg-opacity-90 transition-colors">
-          <img src={chat} alt="Chat" className="w-8 h-8" />
-        </button>
-      </div>
     </div>
   );
 };

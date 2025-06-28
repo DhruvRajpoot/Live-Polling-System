@@ -14,10 +14,7 @@ const StudentRegistration = () => {
   const handleContinue = () => {
     if (name.trim()) {
       localStorage.setItem("studentName", name.trim());
-      alert(`Welcome ${name}! You can now participate in live polls.`);
-      navigate("/role-selection");
-    } else {
-      alert("Please enter your name to continue");
+      navigate("/student-poll");
     }
   };
 
