@@ -1,25 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../components/ui/Button";
 import EditText from "../../components/ui/EditText";
 import Dropdown from "../../components/ui/Dropdown";
 import RadioButton from "../../components/ui/RadioButton";
 import LogoPill from "../../components/common/LogoPill";
+import io from "socket.io-client";
+import { API_URL } from "../../config/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PollCreation = () => {
+  const [socket, setSocket] = useState(null);
   const [question, setQuestion] = useState("");
-  const [timeLimit, setTimeLimit] = useState("60 seconds");
-  const [options, setOptions] = useState([""]);
-  const [correctAnswers, setCorrectAnswers] = useState({
-    option1: "Yes",
-    option2: "No",
-  });
+  const [timeLimit, setTimeLimit] = useState("60");
+  const [options, setOptions] = useState([{ id: 1, text: "", correct: null }]);
+  const teacherUsername = sessionStorage.getItem("username");
+  const navigate = useNavigate();
 
-  const timeLimitOptions = [
-    "30 seconds",
-    "60 seconds",
-    "90 seconds",
-    "120 seconds",
-  ];
+  const timeLimitOptions = ["30", "60", "90", "120"];
+
+  useEffect(() => {
+    const newSocket = io(API_URL);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
 
   const handleQuestionChange = (e) => {
     setQuestion(e.target.value);
@@ -31,23 +38,62 @@ const PollCreation = () => {
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
-    newOptions[index] = value;
+    newOptions[index].text = value;
     setOptions(newOptions);
   };
 
-  const handleCorrectAnswerChange = (optionKey, value) => {
-    setCorrectAnswers((prev) => ({
-      ...prev,
-      [optionKey]: value,
-    }));
+  const handleCorrectAnswerChange = (index, isCorrect) => {
+    const newOptions = [...options];
+    newOptions[index].correct = isCorrect;
+    setOptions(newOptions);
   };
 
   const addMoreOption = () => {
-    setOptions([...options, ""]);
+    setOptions([
+      ...options,
+      { id: options.length + 1, text: "", correct: null },
+    ]);
+  };
+
+  const validateForm = () => {
+    if (question.trim() === "") {
+      toast.error("Question cannot be empty");
+      return false;
+    }
+
+    if (options.length < 2) {
+      toast.error("At least two options are required");
+      return false;
+    }
+
+    const optionTexts = options.map((option) => option.text.trim());
+    if (optionTexts.some((text) => text === "")) {
+      toast.error("All options must have text");
+      return false;
+    }
+
+    const correctOptionExists = options.some(
+      (option) => option.correct === true
+    );
+    if (!correctOptionExists) {
+      toast.error("At least one correct option must be selected");
+      return false;
+    }
+
+    return true;
   };
 
   const handleAskQuestion = () => {
-    alert("Question has been asked successfully!");
+    if (validateForm()) {
+      const pollData = {
+        teacherUsername,
+        question,
+        options,
+        timer: parseInt(timeLimit),
+      };
+      socket.emit("createPoll", pollData);
+      navigate("/teacher-poll");
+    }
   };
 
   return (
@@ -97,7 +143,7 @@ const PollCreation = () => {
                 maxLength={100}
               />
               <div className="absolute bottom-4 right-4 text-sm font-sora text-primary">
-                0/100
+                {question.length}/100
               </div>
             </div>
           </div>
@@ -124,7 +170,7 @@ const PollCreation = () => {
                 </div>
                 <div className="flex-1">
                   <EditText
-                    value={option}
+                    value={option.text}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
                     className="rounded-sm"
                     placeholder={`Enter option ${index + 1}`}
@@ -134,13 +180,8 @@ const PollCreation = () => {
                   <RadioButton
                     name={`option${index + 1}`}
                     value="Yes"
-                    checked={correctAnswers[`option${index + 1}`] === "Yes"}
-                    onChange={(e) =>
-                      handleCorrectAnswerChange(
-                        `option${index + 1}`,
-                        e.target.value
-                      )
-                    }
+                    checked={option.correct === true}
+                    onChange={() => handleCorrectAnswerChange(index, true)}
                     label="Yes"
                   />
                 </div>
@@ -148,13 +189,8 @@ const PollCreation = () => {
                   <RadioButton
                     name={`option${index + 1}`}
                     value="No"
-                    checked={correctAnswers[`option${index + 1}`] === "No"}
-                    onChange={(e) =>
-                      handleCorrectAnswerChange(
-                        `option${index + 1}`,
-                        e.target.value
-                      )
-                    }
+                    checked={option.correct === false}
+                    onChange={() => handleCorrectAnswerChange(index, false)}
                     label="No"
                   />
                 </div>
