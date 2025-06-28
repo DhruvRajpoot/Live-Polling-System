@@ -13,7 +13,7 @@ const PollOptions = ({
 }) => {
   return (
     <div className="w-full bg-white rounded-lg border border-[#6766D5] overflow-hidden mb-8">
-      <div className="bg-gradient-to-r from-gray-800 to-gray-600 px-4 py-3 rounded-t-lg">
+      <div className="bg-gradient-to-r from-[#343434] to-[#6E6E6E] px-4 py-3 rounded-t-lg">
         <h2 className="text-white font-semibold font-sora">{question}</h2>
       </div>
 

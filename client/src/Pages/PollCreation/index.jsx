@@ -5,6 +5,7 @@ import LogoPill from "../../components/common/LogoPill";
 import { toast } from "react-hot-toast";
 import downArrow from "../../assets/downarrow.svg";
 import { useSocket } from "../../context/SocketContext";
+import eyeIcon from "../../assets/eye.svg";
 
 const PollCreation = () => {
   const { createPoll } = useSocket();
@@ -85,8 +86,21 @@ const PollCreation = () => {
     }
   };
 
+  const handleViewPollHistory = () => {
+    navigate("/teacher-poll-history");
+  };
+
   return (
     <div className="min-h-screen p-0">
+      <div className="flex justify-center mb-6">
+        <Button
+          onClick={handleViewPollHistory}
+          className="absolute top-10 right-10"
+        >
+          <img src={eyeIcon} alt="View" className="w-5 h-5" />
+          View Poll History
+        </Button>
+      </div>
       <div className="max-w-4xl ml-[8%]">
         <div className="pt-20 pb-8 px-8">
           <div className="mb-4">
