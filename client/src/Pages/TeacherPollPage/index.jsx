@@ -96,7 +96,7 @@ const TeacherPollPage = () => {
                 ></div>
               </div>
 
-              {pollStatus.allAnswered && (
+              {pollStatus.totalStudents > 0 && pollStatus.allAnswered && (
                 <div className="mt-2 text-sm text-green-600 font-semibold font-sora">
                   {timerExpired
                     ? "⏰ Time's up! All students marked as answered."

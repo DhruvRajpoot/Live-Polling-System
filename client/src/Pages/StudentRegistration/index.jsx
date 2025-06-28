@@ -26,20 +26,20 @@ const StudentRegistration = () => {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="font-sora text-4xl leading-[51px] text-center  mb-6">
+          <h1 className="font-sora text-5xl leading-[51px] text-center  mb-6">
             <span className="font-normal">Let's </span>
             <span className="font-semibold">Get Started</span>
           </h1>
         </div>
 
         <div className="text-center mb-12">
-          <p className="font-sora text-lg leading-6 text-center text-gray max-w-2xl mx-auto">
-            <span className="font-normal">
+          <p className="font-sora text-lg text-center max-w-2xl mx-auto">
+            <span className="font-normal text-[#5C5B5B]">
               {" "}
               If you are a student, you will be able to{" "}
             </span>
             <span className="font-semibold ">submit your answers</span>
-            <span className="font-normal">
+            <span className="font-normal text-[#5C5B5B]">
               , participate in live polls, and see how your responses compare
               with your classmates
             </span>

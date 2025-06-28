@@ -24,17 +24,17 @@ const HomePage = () => {
   return (
     <div className="min-h-screen  flex items-center justify-center px-4">
       <div className="w-full max-w-4xl">
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-7">
           <LogoPill />
         </div>
 
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-normal leading-[51px]  mb-4 font-sora">
+          <h1 className="text-4xl font-normal leading-[51px] mb-4 font-sora">
             <span className="font-normal">Welcome to the </span>
             <span className="font-semibold">Live Polling System</span>
           </h1>
 
-          <p className="text-lg leading-6 text-secondary font-sora max-w-2xl mx-auto">
+          <p className="text-xl leading-6 text-[#00000083] font-sora max-w-2xl mx-auto">
             Please select the role that best describes you to begin using the
             live polling system
           </p>
@@ -49,11 +49,11 @@ const HomePage = () => {
             } hover:shadow-lg`}
             onClick={() => handleRoleSelect("student")}
           >
-            <h3 className="text-xl font-semibold leading-7  mb-3 font-sora">
+            <h3 className="text-2xl font-semibold leading-7 mb-2 font-sora">
               I'm a Student
             </h3>
-            <p className="text-base leading-5 text-tertiary font-sora">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
+            <p className="text-[#454545] font-sora">
+              Lorem Ipsum is simply dummy txt of the printing and typesetting
               industry
             </p>
           </div>
@@ -66,10 +66,10 @@ const HomePage = () => {
             } hover:shadow-lg`}
             onClick={() => handleRoleSelect("teacher")}
           >
-            <h3 className="text-xl font-semibold leading-7  mb-3 font-sora">
+            <h3 className="text-2xl font-semibold leading-7 mb-2 font-sora">
               I'm a Teacher
             </h3>
-            <p className="text-base leading-5 text-tertiary font-sora">
+            <p className="text-[#454545] font-sora">
               Submit answers and view live poll results in real-time.
             </p>
           </div>

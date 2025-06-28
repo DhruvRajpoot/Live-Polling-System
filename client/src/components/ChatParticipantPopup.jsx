@@ -96,7 +96,7 @@ const ChatParticipantPopup = ({ showKickOutButton = false }) => {
                 <div className="h-full flex flex-col">
                   <div className="flex-1 px-4 py-3 overflow-y-auto bg-white">
                     {chatMessages.length === 0 ? (
-                      <div className="text-center text-gray-400 mt-10 text-base">
+                      <div className="text-center text-gray-400 text-base h-full flex items-center justify-center">
                         No messages yet
                       </div>
                     ) : (
@@ -164,9 +164,9 @@ const ChatParticipantPopup = ({ showKickOutButton = false }) => {
                         </div>
                       )}
                     </div>
-                    {participants.length === 0 ? (
-                      <div className="text-center text-gray-400 py-8 text-base">
-                        No participants
+                    {participants.length <= 1 ? (
+                      <div className="text-center text-gray-400 py-20 text-base">
+                        No participants yet
                       </div>
                     ) : (
                       participants

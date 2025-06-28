@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import LogoPill from "../../components/common/LogoPill";
@@ -16,12 +16,26 @@ const PollCreation = () => {
   const [isTimerDropdownOpen, setIsTimerDropdownOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   const timerOptions = [
     { value: "30", label: "30 seconds" },
     { value: "60", label: "60 seconds" },
     { value: "90", label: "90 seconds" },
   ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsTimerDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleQuestionChange = (e) => {
     setQuestion(e.target.value);
@@ -124,23 +138,23 @@ const PollCreation = () => {
             <LogoPill />
           </div>
 
-          <div className="mb-6">
-            <h1 className="text-4xl font-sora leading-tight  mb-4">
+          <div className="mb-12">
+            <h1 className="text-5xl font-sora leading-tight mb-4">
               <span className="font-normal">Let's </span>
               <span className="font-semibold">Get Started</span>
             </h1>
-            <p className="text-lg font-sora text-gray-600 leading-6 max-w-2xl">
+            <p className="text-xl font-sora text-[#00000088] leading-6 max-w-2xl">
               You'll have the ability to create and manage polls, ask questions,
               and monitor your students' responses in real-time.
             </p>
           </div>
 
           <div>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-sora font-semibold ">
                 Enter your question
               </h2>
-              <div className="relative w-44 bg-[#F2F2F2]">
+              <div className="relative w-44 bg-[#F2F2F2]" ref={dropdownRef}>
                 <button
                   type="button"
                   onClick={() => setIsTimerDropdownOpen(!isTimerDropdownOpen)}
