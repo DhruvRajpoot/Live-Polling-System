@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { API_URL } from "../config/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const SocketContext = createContext();
 
@@ -21,10 +22,11 @@ export const SocketProvider = ({ children }) => {
   const [pollStatus, setPollStatus] = useState({
     totalStudents: 0,
     answeredStudents: 0,
-    allAnswered: false
+    allAnswered: false,
   });
   const [timerExpired, setTimerExpired] = useState(false);
-
+  const [participants, setParticipants] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const newSocket = io(API_URL);
     setSocket(newSocket);
@@ -47,7 +49,7 @@ export const SocketProvider = ({ children }) => {
       setPollStatus({
         totalStudents: 0,
         answeredStudents: 0,
-        allAnswered: false
+        allAnswered: false,
       });
       setTimerExpired(false);
     });
@@ -64,15 +66,19 @@ export const SocketProvider = ({ children }) => {
       setTimerExpired(true);
     });
 
+    newSocket.on("participantsUpdate", (participantsList) => {
+      setParticipants(participantsList);
+    });
+
     newSocket.on("kickedOut", () => {
       sessionStorage.removeItem("username");
-      window.location.href = "/kicked-out";
+      navigate("/kicked-out");
     });
 
     return () => {
       newSocket.disconnect();
     };
-  }, []);
+  }, [navigate]);
 
   const createPoll = (pollData) => {
     if (socket) {
@@ -83,6 +89,12 @@ export const SocketProvider = ({ children }) => {
   const submitAnswer = (answerData) => {
     if (socket) {
       socket.emit("submitAnswer", answerData);
+    }
+  };
+
+  const kickOutStudent = (socketId) => {
+    if (socket) {
+      socket.emit("kickOut", socketId);
     }
   };
 
@@ -100,8 +112,10 @@ export const SocketProvider = ({ children }) => {
     votes,
     pollStatus,
     timerExpired,
+    participants,
     createPoll,
     submitAnswer,
+    kickOutStudent,
     calculatePercentage,
   };
 

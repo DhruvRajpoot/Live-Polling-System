@@ -4,6 +4,7 @@ import LogoPill from "../../components/common/LogoPill";
 import { useSocket } from "../../context/SocketContext";
 import Button from "../../components/ui/Button";
 import PollOptions from "../../components/PollOptions";
+import toast from "react-hot-toast";
 
 const StudentPollPage = () => {
   const {
@@ -34,16 +35,15 @@ const StudentPollPage = () => {
   const handleSubmit = () => {
     if (selectedOption && currentPoll) {
       const username = sessionStorage.getItem("username");
-      if (username) {
-        submitAnswer({
-          username: username,
-          option: selectedOption.text,
-          pollId: currentPoll._id,
-        });
-        setSubmitted(true);
-      } else {
-        console.error("No username found in session storage!");
+      if (!username) {
+        toast.error("Please provide your name to submit your answer");
+        return;
       }
+      submitAnswer({
+        option: selectedOption.text,
+        pollId: currentPoll._id,
+      });
+      setSubmitted(true);
     }
   };
 

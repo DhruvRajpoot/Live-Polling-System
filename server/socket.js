@@ -61,33 +61,34 @@ const setupSocket = (server) => {
       });
     });
 
-    socket.on("kickOut", (userToKick) => {
-      for (let id in connectedUsers) {
-        if (connectedUsers[id].name === userToKick) {
-          io.to(id).emit("kickedOut", { message: "You have been kicked out." });
-          const userSocket = io.sockets.sockets.get(id);
-          if (userSocket) {
-            userSocket.disconnect(true);
-          }
-          delete connectedUsers[id];
-          answeredStudents.delete(id);
-          break;
+    socket.on("kickOut", (socketIdToKick) => {
+      if (connectedUsers[socketIdToKick]) {
+        answeredStudents.delete(socketIdToKick);
+        delete connectedUsers[socketIdToKick];
+        io.to(socketIdToKick).emit("kickedOut");
+        const userSocket = io.sockets.sockets.get(socketIdToKick);
+        if (userSocket) {
+          userSocket.disconnect(true);
         }
-      }
-      io.emit(
-        "participantsUpdate",
-        Object.values(connectedUsers).map((user) => user.name)
-      );
 
-      if (currentPollId) {
-        const totalStudents = Object.keys(connectedUsers).length;
-        const allAnswered =
-          totalStudents === 0 || answeredStudents.size === totalStudents;
-        io.emit("pollStatusUpdate", {
-          totalStudents,
-          answeredStudents: answeredStudents.size,
-          allAnswered,
-        });
+        const participantsList = Object.entries(connectedUsers).map(
+          ([socketId, user]) => ({
+            socketId,
+            username: user.name,
+          })
+        );
+        io.emit("participantsUpdate", participantsList);
+
+        if (currentPollId) {
+          const totalStudents = Object.keys(connectedUsers).length;
+          const allAnswered =
+            totalStudents === 0 || answeredStudents.size === totalStudents;
+          io.emit("pollStatusUpdate", {
+            totalStudents,
+            answeredStudents: answeredStudents.size,
+            allAnswered,
+          });
+        }
       }
     });
 
@@ -96,18 +97,26 @@ const setupSocket = (server) => {
         name: username,
         socketId: socket.id,
       };
-      io.emit(
-        "participantsUpdate",
-        Object.values(connectedUsers).map((user) => user.name)
+
+      const participantsList = Object.entries(connectedUsers).map(
+        ([socketId, user]) => ({
+          socketId,
+          username: user.name,
+        })
       );
+      io.emit("participantsUpdate", participantsList);
 
       socket.on("disconnect", () => {
         answeredStudents.delete(socket.id);
         delete connectedUsers[socket.id];
-        io.emit(
-          "participantsUpdate",
-          Object.values(connectedUsers).map((user) => user.name)
+
+        const participantsList = Object.entries(connectedUsers).map(
+          ([socketId, user]) => ({
+            socketId,
+            username: user.name,
+          })
         );
+        io.emit("participantsUpdate", participantsList);
 
         if (currentPollId) {
           const totalStudents = Object.keys(connectedUsers).length;

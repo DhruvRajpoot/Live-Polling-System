@@ -13,8 +13,8 @@ import { SocketProvider } from "./context/SocketContext";
 
 const App = () => {
   return (
-    <SocketProvider>
-      <Router>
+    <Router>
+      <SocketProvider>
         <ToastProvider />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -28,8 +28,8 @@ const App = () => {
           <Route path="/teacher-poll-history" element={<PollHistoryPage />} />
           <Route path="/kicked-out" element={<KickedOut />} />
         </Routes>
-      </Router>
-    </SocketProvider>
+      </SocketProvider>
+    </Router>
   );
 };
 
