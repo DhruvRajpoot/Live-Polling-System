@@ -216,12 +216,12 @@ const PollCreation = () => {
                   </div>
                   <input
                     type="text"
-                    className="flex-1 p-2 border border-gray-300 rounded-sm font-sora  outline outline-[#8F64E1]"
+                    className="flex-1 px-5 py-4 font-sora outline-none bg-[#F2F2F2]"
                     placeholder={`Enter option ${index + 1}`}
                     value={option.text}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
                   />
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ml-4">
                     <label
                       htmlFor={`correct-yes-${index}`}
                       className={`flex items-center cursor-pointer gap-2`}
@@ -286,7 +286,7 @@ const PollCreation = () => {
                   variant="outline"
                   size="medium"
                   onClick={addOption}
-                  className="!w-40 !h-11 !text-sm !rounded-md"
+                  className="!w-42 !h-11 !text-sm !rounded-xl"
                 >
                   + Add More option
                 </Button>
@@ -295,7 +295,7 @@ const PollCreation = () => {
           </div>
         </div>
       </div>
-      <div className="w-full min-h-px bg-[#F2F2F2] mt-2"></div>
+      <div className="w-full min-h-px bg-[#B6B6B6] mt-2"></div>
 
       <div className="flex justify-end max-w-[calc(100%-200px)] mx-auto my-8">
         <Button

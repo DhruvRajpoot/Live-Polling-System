@@ -4,6 +4,7 @@ import LogoPill from "../../components/common/LogoPill";
 import { useSocket } from "../../context/SocketContext";
 import Button from "../../components/ui/Button";
 import PollOptions from "../../components/PollOptions";
+import ChatParticipantPopup from "../../components/ChatParticipantPopup";
 import toast from "react-hot-toast";
 
 const StudentPollPage = () => {
@@ -163,24 +164,26 @@ const StudentPollPage = () => {
             onOptionSelect={handleOptionSelect}
           />
 
-          <div className="flex justify-end mb-8">
-            <Button
-              onClick={handleSubmit}
-              disabled={!selectedOption || submitted || timeLeft === 0}
-            >
-              Submit Answer
-            </Button>
-          </div>
+          {submitted ? (
+            <div className="text-center mb-8 h-13">
+              <p className="text-2xl font-semibold  font-sora">
+                Wait for the teacher to ask a new question..
+              </p>
+            </div>
+          ) : (
+            <div className="flex justify-end mb-8">
+              <Button
+                onClick={handleSubmit}
+                disabled={!selectedOption || submitted || timeLeft === 0}
+              >
+                Submit Answer
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
-      {submitted && (
-        <div className="text-center mb-8">
-          <p className="text-2xl font-semibold  font-sora">
-            Wait for the teacher to ask a new question..
-          </p>
-        </div>
-      )}
+      <ChatParticipantPopup />
     </div>
   );
 };

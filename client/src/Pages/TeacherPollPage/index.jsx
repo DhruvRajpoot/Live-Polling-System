@@ -5,10 +5,17 @@ import LogoPill from "../../components/common/LogoPill";
 import Button from "../../components/ui/Button";
 import { useSocket } from "../../context/SocketContext";
 import PollOptions from "../../components/PollOptions";
+import ChatParticipantPopup from "../../components/ChatParticipantPopup";
 
 const TeacherPollPage = () => {
-  const { currentPoll, votes, calculatePercentage, pollStatus, timerExpired } =
-    useSocket();
+  const {
+    socket,
+    currentPoll,
+    votes,
+    calculatePercentage,
+    pollStatus,
+    timerExpired,
+  } = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +24,13 @@ const TeacherPollPage = () => {
       sessionStorage.removeItem("currentPoll");
     }
   }, []);
+
+  useEffect(() => {
+    const username = sessionStorage.getItem("username");
+    if (socket && username) {
+      socket.emit("joinChat", { username });
+    }
+  }, [socket]);
 
   const askNewQuestion = () => {
     navigate("/poll-creation");
@@ -133,6 +147,8 @@ const TeacherPollPage = () => {
           </div>
         )}
       </div>
+
+      <ChatParticipantPopup showKickOutButton={true} />
     </div>
   );
 };
