@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import LogoPill from "../../components/LogoPill";
-import Button from "../../components/Button";
+import LogoPill from "../../components/common/LogoPill";
+import Button from "../../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState("student");
-
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
 
   const handleContinue = () => {
     if (selectedRole === "student") {
-      alert("Welcome Student! Redirecting to your dashboard...");
+      navigate("/student-registration");
     } else {
-      alert("Welcome Teacher! Redirecting to your dashboard...");
+      navigate("/poll-creation");
     }
   };
 
@@ -72,7 +73,9 @@ const HomePage = () => {
         </div>
 
         <div className="flex justify-center">
-          <Button text="Continue" onClick={handleContinue} />
+          <Button disabled={!selectedRole} onClick={handleContinue}>
+            Continue
+          </Button>
         </div>
       </div>
     </div>
