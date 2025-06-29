@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import HomePage from "./pages/HomePage";
-import StudentRegistrationPage from "./pages/StudentRegistration";
-import PollCreationPage from "./pages/PollCreation";
-import StudentPollPage from "./pages/StudentPollPage";
-import TeacherPollPage from "./pages/TeacherPollPage";
-import PollHistoryPage from "./pages/PollHistory";
+import HomePage from "./Pages/HomePage";
+import StudentRegistrationPage from "./Pages/StudentRegistration";
+import PollCreationPage from "./Pages/PollCreation";
+import StudentPollPage from "./Pages/StudentPollPage";
+import TeacherPollPage from "./Pages/TeacherPollPage";
+import PollHistoryPage from "./Pages/PollHistory";
 import ToastProvider from "./components/common/ToastProvide";
-import KickedOut from "./pages/KickedOut";
+import KickedOut from "./Pages/KickedOut";
 import { SocketProvider } from "./context/SocketContext";
 
 const App = () => {
