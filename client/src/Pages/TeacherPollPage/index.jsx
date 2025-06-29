@@ -13,20 +13,17 @@ const TeacherPollPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const username = sessionStorage.getItem("username");
     const storedPoll = sessionStorage.getItem("currentPoll");
     if (storedPoll) {
       const pollData = JSON.parse(storedPoll);
       sessionStorage.removeItem("currentPoll");
       setCurrentPoll(pollData);
+      if (socket && username) {
+        socket.emit("joinChat", { username });
+      }
     }
   }, []);
-
-  useEffect(() => {
-    const username = sessionStorage.getItem("username");
-    if (socket && username) {
-      socket.emit("joinChat", { username });
-    }
-  }, [socket]);
 
   const askNewQuestion = () => {
     navigate("/poll-creation");
