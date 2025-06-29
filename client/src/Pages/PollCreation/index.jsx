@@ -104,6 +104,7 @@ const PollCreation = () => {
         const response = await axiosInstance.post("/polls", pollData);
 
         if (response.data.status === "success") {
+          sessionStorage.setItem("currentPoll", JSON.stringify(response.data.data));
           createPoll(response.data.data);
           navigate("/teacher-poll");
         } else {

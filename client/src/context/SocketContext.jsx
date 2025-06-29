@@ -131,6 +131,7 @@ export const SocketProvider = ({ children }) => {
     kickOutStudent,
     sendChatMessage,
     calculatePercentage,
+    setCurrentPoll,
   };
 
   return (
