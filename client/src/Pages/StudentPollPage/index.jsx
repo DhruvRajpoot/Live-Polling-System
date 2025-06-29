@@ -104,16 +104,16 @@ const StudentPollPage = () => {
   const pollOptions = currentPoll?.options || [];
 
   return (
-    <div className="min-h-screen -4 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       {pollQuestion === "" && timeLeft === 0 && (
         <div className="flex justify-center items-center mx-auto">
-          <div className="flex flex-col items-center justify-center text-center">
+          <div className="flex flex-col items-center justify-center text-center px-4 lg:px-0">
             <LogoPill />
 
-            <div role="status" className="my-8">
+            <div role="status" className="my-6 lg:my-8">
               <svg
                 aria-hidden="true"
-                className="w-12 h-12 text-[#500ECE] animate-spin dark:text-[#500ECE] fill-white"
+                className="w-10 h-10 lg:w-12 lg:h-12 text-[#500ECE] animate-spin dark:text-[#500ECE] fill-white"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ const StudentPollPage = () => {
               <span className="sr-only">Loading...</span>
             </div>
 
-            <h3 className="text-2xl font-medium font-sora ">
+            <h3 className="text-xl lg:text-2xl font-medium font-sora">
               <span className="font-semibold">
                 Wait for the teacher to ask questions..
               </span>
@@ -141,13 +141,17 @@ const StudentPollPage = () => {
 
       {pollQuestion !== "" && (
         <div className="max-w-2xl w-full">
-          <div className="flex items-center gap-4 mb-8 w-full text-left">
-            <h1 className="text-2xl font-semibold  font-sora">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4 mb-6 lg:mb-8 w-full text-left">
+            <h1 className="text-xl lg:text-2xl font-semibold font-sora">
               Question {questionCount}
             </h1>
             <div className="flex items-center gap-2">
-              <img src={stopwatch} alt="Timer" className="w-6 h-6" />
-              <span className="text-lg font-semibold text-red-500 font-sora">
+              <img
+                src={stopwatch}
+                alt="Timer"
+                className="w-5 h-5 lg:w-6 lg:h-6"
+              />
+              <span className="text-base lg:text-lg font-semibold text-red-500 font-sora">
                 {formatTime(timeLeft)}
               </span>
             </div>
@@ -165,13 +169,13 @@ const StudentPollPage = () => {
           />
 
           {submitted ? (
-            <div className="text-center mb-8 h-13">
-              <p className="text-2xl font-semibold  font-sora">
+            <div className="text-center mb-6 lg:mb-8 h-13 px-4 lg:px-0">
+              <p className="text-lg lg:text-2xl font-semibold font-sora">
                 Wait for the teacher to ask a new question..
               </p>
             </div>
           ) : (
-            <div className="flex justify-end mb-8">
+            <div className="flex justify-end mb-6 lg:mb-8 px-4 lg:px-0">
               <Button
                 onClick={handleSubmit}
                 disabled={!selectedOption || submitted || timeLeft === 0}

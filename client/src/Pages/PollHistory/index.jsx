@@ -32,17 +32,17 @@ const PollHistoryPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center p-4">
       <div className="w-full max-w-4xl">
-        <div className="flex items-center gap-4 my-10">
-          <h1 className="text-5xl font-normal leading-[60px] font-sora">
+        <div className="flex items-center gap-4 my-6 lg:my-10">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-normal leading-tight lg:leading-[60px] font-sora">
             <span className="font-normal">View </span>
             <span className="font-semibold">Poll History</span>
           </h1>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-16">
+          <div className="flex flex-col items-center justify-center py-12 lg:py-16">
             <svg
-              className="animate-spin h-10 w-10 text-[#6766D5] mb-4"
+              className="animate-spin h-8 w-8 lg:h-10 lg:w-10 text-[#6766D5] mb-4"
               viewBox="0 0 24 24"
             >
               <circle
@@ -60,12 +60,12 @@ const PollHistoryPage = () => {
                 d="M4 12a8 8 0 018-8v8z"
               />
             </svg>
-            <span className="text-gray-500 font-sora">
+            <span className="text-sm lg:text-base text-gray-500 font-sora">
               Loading poll history...
             </span>
           </div>
         ) : polls.length > 0 ? (
-          <div className="space-y-12">
+          <div className="space-y-8 lg:space-y-12">
             {polls.map((poll, index) => {
               const totalVotes = poll.options.reduce(
                 (sum, option) => sum + option.votes,
@@ -85,8 +85,8 @@ const PollHistoryPage = () => {
 
               return (
                 <div key={poll._id} className="max-w-2xl w-full">
-                  <div className="flex items-center gap-4 mb-8 w-full text-left">
-                    <h1 className="text-2xl font-semibold font-sora">
+                  <div className="flex items-center gap-4 mb-6 lg:mb-8 w-full text-left">
+                    <h1 className="text-xl lg:text-2xl font-semibold font-sora">
                       Question {index + 1}
                     </h1>
                   </div>
@@ -105,10 +105,10 @@ const PollHistoryPage = () => {
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-5 text-gray-500 font-sora py-10">
+          <div className="flex flex-col items-center justify-center gap-4 lg:gap-5 text-gray-500 font-sora py-8 lg:py-10 px-4 lg:px-0">
             <div>
               <svg
-                className="w-16 h-16 mx-auto"
+                className="w-12 h-12 lg:w-16 lg:h-16 mx-auto"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -121,8 +121,10 @@ const PollHistoryPage = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold font-sora">No Polls Found</h3>
-            <p>
+            <h3 className="text-lg lg:text-xl font-semibold font-sora text-center">
+              No Polls Found
+            </h3>
+            <p className="text-center text-sm lg:text-base">
               You haven't created any polls yet. Start by creating your first
               poll!
             </p>

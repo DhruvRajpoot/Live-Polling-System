@@ -46,30 +46,33 @@ const TeacherPollPage = () => {
   const canAskNewQuestion = !pollQuestion || pollStatus.allAnswered;
 
   return (
-    <div className="min-h-screen -4 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="flex justify-center mb-6">
           <Button
             onClick={handleViewPollHistory}
-            className="absolute top-10 right-10"
+            className="max-w-[91%] lg:max-w-none absolute top-4 lg:top-10 lg:right-10 text-sm lg:text-base"
           >
-            <img src={eyeIcon} alt="View" className="w-5 h-5" />
-            View Poll History
+            <img src={eyeIcon} alt="View" className="w-4 h-4 lg:w-5 lg:h-5" />
+            <span className="hidden lg:inline">View Poll History</span>
+            <span className="lg:hidden">History</span>
           </Button>
         </div>
 
         {pollQuestion && (
           <div className="max-w-2xl w-full">
             <div className="flex items-center gap-4 mb-6 max-w-2xl w-full text-left">
-              <h1 className="text-2xl font-semibold font-sora">Question</h1>
+              <h1 className="text-xl lg:text-2xl font-semibold font-sora">
+                Question
+              </h1>
             </div>
 
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600 font-sora">
+            <div className="mb-6 p-3 lg:p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0">
+                <div className="text-xs lg:text-sm text-gray-600 font-sora">
                   <span className="font-semibold">Students Progress:</span>
                 </div>
-                <div className="text-sm font-sora">
+                <div className="text-xs lg:text-sm font-sora">
                   <span className="font-semibold text-[#6766D5]">
                     {pollStatus.answeredStudents}
                   </span>
@@ -97,7 +100,7 @@ const TeacherPollPage = () => {
               </div>
 
               {pollStatus.totalStudents > 0 && pollStatus.allAnswered && (
-                <div className="mt-2 text-sm text-green-600 font-semibold font-sora">
+                <div className="mt-2 text-xs lg:text-sm text-green-600 font-semibold font-sora">
                   {timerExpired
                     ? "⏰ Time's up! All students marked as answered."
                     : "✓ All students have answered!"}
@@ -113,20 +116,14 @@ const TeacherPollPage = () => {
               viewOnly={true}
             />
 
-            <div className="flex justify-end mb-8">
-              <Button
-                onClick={askNewQuestion}
-                disabled={!canAskNewQuestion}
-                className={
-                  !canAskNewQuestion ? "opacity-50 cursor-not-allowed" : ""
-                }
-              >
+            <div className="flex justify-end mb-6 lg:mb-8">
+              <Button onClick={askNewQuestion} disabled={!canAskNewQuestion}>
                 + Ask a New Question
               </Button>
             </div>
 
             {!canAskNewQuestion && (
-              <div className="text-center text-sm text-gray-500 font-sora mb-4">
+              <div className="text-center text-xs lg:text-sm text-gray-500 font-sora mb-4 px-4 lg:px-0">
                 {timerExpired
                   ? "Timer has expired. You can now ask a new question."
                   : "Wait for all students to answer before asking a new question"}
@@ -136,14 +133,14 @@ const TeacherPollPage = () => {
         )}
 
         {!pollQuestion && (
-          <div className="flex flex-col justify-center items-center mx-auto gap-4">
+          <div className="flex flex-col justify-center items-center mx-auto gap-4 px-4 lg:px-0">
             <LogoPill />
 
-            <p className="text-gray-600 font-sora mt-2 text-xl">
+            <p className="text-gray-600 font-sora mt-2 text-lg lg:text-xl text-center">
               Create a new poll to see results here
             </p>
 
-            <Button onClick={askNewQuestion}>Ask a New Question</Button>
+            <Button onClick={askNewQuestion}>+ Ask a New Question</Button>
           </div>
         )}
       </div>

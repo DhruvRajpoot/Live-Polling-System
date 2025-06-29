@@ -19,21 +19,21 @@ const StudentRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 lg:py-0">
       <div className="w-full max-w-3xl mx-auto">
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6 lg:mb-8">
           <LogoPill />
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="font-sora text-5xl leading-[51px] text-center  mb-6">
+        <div className="text-center mb-6 lg:mb-8">
+          <h1 className="font-sora text-3xl lg:text-4xl xl:text-5xl leading-tight lg:leading-[51px] text-center mb-4 lg:mb-6">
             <span className="font-normal">Let's </span>
             <span className="font-semibold">Get Started</span>
           </h1>
         </div>
 
-        <div className="text-center mb-12">
-          <p className="font-sora text-lg text-center max-w-2xl mx-auto">
+        <div className="text-center mb-8 lg:mb-12 px-4 lg:px-0">
+          <p className="font-sora text-base lg:text-lg text-center max-w-2xl mx-auto">
             <span className="font-normal text-[#5C5B5B]">
               {" "}
               If you are a student, you will be able to{" "}
@@ -46,8 +46,8 @@ const StudentRegistration = () => {
           </p>
         </div>
 
-        <div className="mb-8 max-w-lg mx-auto">
-          <label className="block font-sora text-lg font-normal  mb-3">
+        <div className="mb-8 max-w-lg mx-auto px-4 lg:px-0">
+          <label className="block font-sora text-base lg:text-lg font-normal mb-3">
             Enter your Name
           </label>
           <input
@@ -55,12 +55,12 @@ const StudentRegistration = () => {
             value={name}
             onChange={handleNameChange}
             placeholder="Rahul Bajaj"
-            className="w-full h-15 px-4 py-4 bg-gray-lightest rounded-sm font-sora text-lg  focus:outline-none focus:ring-1 focus:ring-purple focus:border-transparent"
+            className="w-full h-12 lg:h-15 px-4 py-3 lg:py-4 bg-gray-lightest rounded-sm font-sora text-base lg:text-lg focus:outline-none focus:ring-1 focus:ring-purple focus:border-transparent"
             style={{ backgroundColor: "#f2f2f2" }}
           />
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center px-4 lg:px-0">
           <Button disabled={!name} onClick={handleContinue}>
             Continue
           </Button>
