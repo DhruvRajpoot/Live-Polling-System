@@ -9,7 +9,13 @@ import setupRoutes from "./routes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production" ? process.env.CLIENT_URL : "*",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const port = process.env.PORT || 8080;
