@@ -8,6 +8,19 @@ https://live-polling-system-culy.onrender.com/
 
 ## Video Demo
 
+https://github.com/user-attachments/assets/a395b50e-6223-4ded-9b15-3e6d44c5f19f
+
+## Screenshots
+
+<img width="500" alt="Screenshot 2025-06-29 at 9 21 10 AM" src="https://github.com/user-attachments/assets/0fdd3b24-c0eb-4b04-aa78-515dea8773e1" />
+
+<img width="500" alt="Screenshot 2025-06-29 at 9 21 49 AM" src="https://github.com/user-attachments/assets/7c01801f-d229-44b9-b27f-acb8521224fd" />
+
+<img width="500" alt="Screenshot 2025-06-29 at 9 22 00 AM" src="https://github.com/user-attachments/assets/f7b7cac3-6410-4289-8039-8796b71ea053" />
+
+<img width="500" alt="Screenshot 2025-06-29 at 9 26 01 AM" src="https://github.com/user-attachments/assets/d72984a9-6e6d-4a67-bc11-b795f370c798" />
+
+
 ## Assignment Overview
 
 This project implements a live polling system with two distinct personas (Teacher and Student) as specified in the assignment requirements. The system provides real-time interaction, session management, and comprehensive polling functionality.
