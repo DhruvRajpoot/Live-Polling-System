@@ -104,7 +104,10 @@ const PollCreation = () => {
         const response = await axiosInstance.post("/polls", pollData);
 
         if (response.data.status === "success") {
-          sessionStorage.setItem("currentPoll", JSON.stringify(response.data.data));
+          sessionStorage.setItem(
+            "currentPoll",
+            JSON.stringify(response.data.data)
+          );
           createPoll(response.data.data);
           navigate("/teacher-poll");
         } else {
@@ -323,7 +326,11 @@ const PollCreation = () => {
       <div className="w-full min-h-px bg-[#B6B6B6] mt-2"></div>
 
       <div className="flex justify-end max-w-[calc(100%-32px)] lg:max-w-[calc(100%-200px)] mx-auto my-6 lg:my-8 px-4 lg:px-0">
-        <Button onClick={askQuestion} disabled={isCreating}>
+        <Button
+          onClick={askQuestion}
+          disabled={isCreating}
+          loading={isCreating}
+        >
           {isCreating ? "Creating Poll..." : "Ask Question"}
         </Button>
       </div>

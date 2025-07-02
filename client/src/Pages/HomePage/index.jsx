@@ -3,10 +3,13 @@ import LogoPill from "../../components/common/LogoPill";
 import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
@@ -15,9 +18,16 @@ const HomePage = () => {
     if (selectedRole === "student") {
       navigate("/student-registration");
     } else {
-      const teacherlogin = await axiosInstance.post(`/teacher-login`);
-      sessionStorage.setItem("username", teacherlogin.data.username);
-      navigate("/poll-creation");
+      setIsLoading(true);
+      try {
+        const teacherlogin = await axiosInstance.post(`/teacher-login`);
+        sessionStorage.setItem("username", teacherlogin.data.username);
+        navigate("/poll-creation");
+      } catch {
+        toast.error("Teacher login failed");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -76,8 +86,12 @@ const HomePage = () => {
         </div>
 
         <div className="flex justify-center px-4 lg:px-0">
-          <Button disabled={!selectedRole} onClick={handleContinue}>
-            Continue
+          <Button
+            disabled={!selectedRole || isLoading}
+            onClick={handleContinue}
+            loading={isLoading}
+          >
+            {isLoading ? "Loading..." : "Continue"}
           </Button>
         </div>
       </div>
