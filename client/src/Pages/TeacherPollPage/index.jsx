@@ -15,15 +15,17 @@ const TeacherPollPage = () => {
   useEffect(() => {
     const username = sessionStorage.getItem("username");
     const storedPoll = sessionStorage.getItem("currentPoll");
+    
+    if (socket && username) {
+      socket.emit("joinChat", { username });
+    }
+    
     if (storedPoll) {
       const pollData = JSON.parse(storedPoll);
       sessionStorage.removeItem("currentPoll");
       setCurrentPoll(pollData);
-      if (socket && username) {
-        socket.emit("joinChat", { username });
-      }
     }
-  }, []);
+  }, [socket, setCurrentPoll]);
 
   const askNewQuestion = () => {
     navigate("/poll-creation");

@@ -48,6 +48,10 @@ const ChatParticipantPopup = ({ showKickOutButton = false }) => {
 
   const currentUser = sessionStorage.getItem("username") || "";
 
+  const otherParticipants = participants.filter(
+    (participant) => participant.username !== currentUser
+  );
+
   return (
     <>
       <button
@@ -157,44 +161,42 @@ const ChatParticipantPopup = ({ showKickOutButton = false }) => {
                 <div className="h-full bg-white px-4 lg:px-6 py-3 lg:py-5 overflow-y-auto">
                   <div className="w-full">
                     <div className="flex pb-2 text-[#726F6F]">
-                      <div className="flex-1 text-xs lg:text-sm font-medium">Name</div>
+                      <div className="flex-1 text-xs lg:text-sm font-medium">
+                        Name
+                      </div>
                       {showKickOutButton && (
                         <div className="w-16 lg:w-20 text-xs lg:text-sm font-medium text-right">
                           Action
                         </div>
                       )}
                     </div>
-                    {participants.length <= 1 ? (
+                    {otherParticipants.length === 0 ? (
                       <div className="text-center text-gray-400 py-16 lg:py-20 text-sm lg:text-base">
-                        No participants yet
+                        No other participants yet
                       </div>
                     ) : (
-                      participants
-                        .filter(
-                          (participant) => participant.username !== currentUser
-                        )
-                        .map((participant) => (
-                          <div
-                            key={participant.socketId}
-                            className="flex items-center py-2"
-                          >
-                            <div className="flex-1 text-xs lg:text-sm text-black font-semibold">
-                              {participant.username}
-                            </div>
-                            {showKickOutButton && (
-                              <div className="w-16 lg:w-20 text-right">
-                                <button
-                                  className="text-[#2D5BD2] underline font-medium text-xs lg:text-sm hover:text-[#1d3b8b] cursor-pointer"
-                                  onClick={() =>
-                                    kickOutStudent(participant.socketId)
-                                  }
-                                >
-                                  Kick out
-                                </button>
-                              </div>
-                            )}
+                      otherParticipants.map((participant) => (
+                        <div
+                          key={participant.socketId}
+                          className="flex items-center py-2"
+                        >
+                          <div className="flex-1 text-xs lg:text-sm text-black font-semibold">
+                            {participant.username}
                           </div>
-                        ))
+                          {showKickOutButton && (
+                            <div className="w-16 lg:w-20 text-right">
+                              <button
+                                className="text-[#2D5BD2] underline font-medium text-xs lg:text-sm hover:text-[#1d3b8b] cursor-pointer"
+                                onClick={() =>
+                                  kickOutStudent(participant.socketId)
+                                }
+                              >
+                                Kick out
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))
                     )}
                   </div>
                 </div>

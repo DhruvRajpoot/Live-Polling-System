@@ -104,30 +104,6 @@ const setupSocket = (server) => {
         })
       );
       io.emit("participantsUpdate", participantsList);
-
-      socket.on("disconnect", () => {
-        answeredStudents.delete(socket.id);
-        delete connectedUsers[socket.id];
-
-        const participantsList = Object.entries(connectedUsers).map(
-          ([socketId, user]) => ({
-            socketId,
-            username: user.name,
-          })
-        );
-        io.emit("participantsUpdate", participantsList);
-
-        if (currentPollId) {
-          const totalStudents = Object.keys(connectedUsers).length;
-          const allAnswered =
-            totalStudents === 0 || answeredStudents.size === totalStudents;
-          io.emit("pollStatusUpdate", {
-            totalStudents,
-            answeredStudents: answeredStudents.size,
-            allAnswered,
-          });
-        }
-      });
     });
 
     socket.on("studentLogin", (name) => {
@@ -164,6 +140,27 @@ const setupSocket = (server) => {
 
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
+      answeredStudents.delete(socket.id);
+      delete connectedUsers[socket.id];
+
+      const participantsList = Object.entries(connectedUsers).map(
+        ([socketId, user]) => ({
+          socketId,
+          username: user.name,
+        })
+      );
+      io.emit("participantsUpdate", participantsList);
+
+      if (currentPollId) {
+        const totalStudents = Object.keys(connectedUsers).length;
+        const allAnswered =
+          totalStudents === 0 || answeredStudents.size === totalStudents;
+        io.emit("pollStatusUpdate", {
+          totalStudents,
+          answeredStudents: answeredStudents.size,
+          allAnswered,
+        });
+      }
     });
   });
 };

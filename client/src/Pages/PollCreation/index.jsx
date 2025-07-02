@@ -9,7 +9,7 @@ import eyeIcon from "../../assets/eye.svg";
 import axiosInstance from "../../config/axiosInstance";
 
 const PollCreation = () => {
-  const { createPoll } = useSocket();
+  const { createPoll, socket } = useSocket();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([{ id: 1, text: "", correct: null }]);
   const [timer, setTimer] = useState("60");
@@ -108,6 +108,11 @@ const PollCreation = () => {
             "currentPoll",
             JSON.stringify(response.data.data)
           );
+          
+          if (socket && teacherUsername) {
+            socket.emit("joinChat", { username: teacherUsername });
+          }
+          
           createPoll(response.data.data);
           navigate("/teacher-poll");
         } else {
